@@ -13,7 +13,14 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $product = Product::with('productFile')->get();
+        $product_query = Product::with('productFile');
+        if ($request->name) {
+            $product_query->where('name', $request->name);
+        }
+        if ($request->price) {
+            $product_query->where('price', $request->price);
+        }
+        $product = $product_query->latest()->get();
         $data_array = [];
         $page = isset($request->page) ? $request->page : '';
         $page_size = isset($request->page_size) ? $request->page_size : '';
